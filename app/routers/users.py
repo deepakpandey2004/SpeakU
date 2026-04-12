@@ -9,7 +9,7 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post("/register", response_model=UserResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    # Check karo email already exist toh nahi karta
+    
     existing = db.query(User).filter(User.email == user.email).first()
     if existing:
         raise HTTPException(
@@ -30,7 +30,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         username=user.username,
         email=user.email,
         hashed_password=hash_password(user.password),
-        lingos=50  # Starting credits
+        lingos=50  
     )
     
     db.add(new_user)

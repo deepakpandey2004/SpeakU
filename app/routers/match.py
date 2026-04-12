@@ -7,14 +7,14 @@ import asyncio
 
 router = APIRouter(prefix="/match", tags=["Matchmaking"])
 
-# In-memory queues — Redis ki jagah
-waiting_users = {}  # key: "native:learning", value: list of (user_data, websocket)
+
+waiting_users = {}  
 
 @router.websocket("/find")
 async def find_match(websocket: WebSocket, token: str, db: Session = Depends(get_db)):
     await websocket.accept()
 
-    # Token verify karo
+    
     payload = verify_token(token)
     if not payload:
         await websocket.send_json({"status": "error", "message": "Invalid token"})
@@ -53,14 +53,14 @@ async def find_match(websocket: WebSocket, token: str, db: Session = Depends(get
         "message": f"Looking for a {user.learning_language} speaker..."
     })
 
-    # Check karo opposite user wait kar raha hai kya
+    
     if opposite_key in waiting_users and len(waiting_users[opposite_key]) > 0:
-        # Match mila!
+        
         waiting_user_data, waiting_ws = waiting_users[opposite_key].pop(0)
         
         channel = f"speaku_{min(user_id, waiting_user_data['user_id'])}_{max(user_id, waiting_user_data['user_id'])}"
 
-        # Current user ko notify karo
+        
         await websocket.send_json({
             "status": "matched",
             "message": "Match found! 🎉",
@@ -69,7 +69,7 @@ async def find_match(websocket: WebSocket, token: str, db: Session = Depends(get
             "their_language": waiting_user_data['native_language']
         })
 
-        # Waiting user ko notify karo
+        
         try:
             await waiting_ws.send_json({
                 "status": "matched",
@@ -84,7 +84,7 @@ async def find_match(websocket: WebSocket, token: str, db: Session = Depends(get
         await websocket.close()
 
     else:
-        # Queue mein add karo
+        
         if my_key not in waiting_users:
             waiting_users[my_key] = []
         
@@ -95,10 +95,10 @@ async def find_match(websocket: WebSocket, token: str, db: Session = Depends(get
             "message": "Waiting for a match... (up to 60 seconds)"
         })
 
-        # 60 seconds wait karo
+        
         try:
             await asyncio.sleep(60)
-            # Agar abhi bhi queue mein hai — timeout
+            
             if my_key in waiting_users:
                 waiting_users[my_key] = [
                     (u, ws) for u, ws in waiting_users[my_key]
@@ -109,7 +109,7 @@ async def find_match(websocket: WebSocket, token: str, db: Session = Depends(get
                 "message": "No match found. Please try again!"
             })
         except WebSocketDisconnect:
-            # User disconnect ho gaya — queue se hatao
+            
             if my_key in waiting_users:
                 waiting_users[my_key] = [
                     (u, ws) for u, ws in waiting_users[my_key]

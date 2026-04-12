@@ -9,7 +9,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)),
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-print(f"DEBUG - DATABASE_URL: {DATABASE_URL}")  # debugging ke liye
+print(f"DEBUG - DATABASE_URL: {DATABASE_URL}")  
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

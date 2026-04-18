@@ -21,22 +21,18 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12)
 
 def hash_password(password: str) -> str:
-    """Plain password ko hash karta hai"""
     return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Login pe password verify karta hai"""
     return pwd_context.verify(plain_password, hashed_password)
 
 def create_access_token(data: dict) -> str:
-    """JWT token banata hai"""
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 def verify_token(token: str) -> dict:
-    """Token verify karta hai aur user data return karta hai"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
@@ -48,7 +44,7 @@ def verify_token(token: str) -> dict:
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    """Token se current user nikalta hai"""
+    p
     payload = verify_token(token)
     if not payload:
         raise HTTPException(

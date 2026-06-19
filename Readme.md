@@ -4,7 +4,7 @@
 ## 🌐 Live Demo
 [![Live API](https://img.shields.io/badge/Live%20API-Online-brightgreen)](https://speaku-ymeo.onrender.com/docs)
 
-> **Swagger Docs:** https://speaku.onrender.com/docs
+> **Swagger Docs:** https://speaku-ymeo.onrender.com/docs
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.x-blue)](https://python.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-lightblue)](https://supabase.com)
